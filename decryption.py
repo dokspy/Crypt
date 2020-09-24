@@ -2,21 +2,21 @@ import pyAesCrypt
 import os
 
 
-# function encryption file
-def encryption(file, password):
+# function decryption file
+def decryption(file, password):
     # size buffer
     buffer_size = 512 * 1024
 
-    # вызываем метод шифрования
-    pyAesCrypt.encryptFile(
+    # вызываем метод расшифровки
+    pyAesCrypt.decryptFile(
         str(file),
-        str(file) + ".crp",
+        str(os.path.splitext(file)[0]),
         password,
         buffer_size
     )
 
     # чтобы видеть результат выводим на печать имя зашифрованного файла
-    print("[File '" + str(os.path.splitext(file)[0]) + "' encrypted]")
+    print("[File '" + str(os.path.splitext(file)[0]) + "' decrypted]")
 
     # remove original file
     os.remove(file)
@@ -28,12 +28,14 @@ def walking_by_dirs(dir, password):
     for name in os.listdir(dir):
         path = os.path.join(dir, name)
 
-        # если находим файл, то шифруем его
+        # если находим файл, то дешифруем его
         if os.path.isfile(path):
             try:
-                encryption(path, password)
+                decryption(path, password)
             except Exception as ex:
                 print(ex)
+                os.remove(path)
+                print("File remove")
         # если находим директорию, то повторяем цикл в поисках файлов
         else:
             walking_by_dirs(path, password)
